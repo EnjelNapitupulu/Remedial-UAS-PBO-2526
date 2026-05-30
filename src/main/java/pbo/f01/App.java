@@ -15,10 +15,15 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Scanner;
+// Tambahan library untuk mematikan log
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class App {
     public static void main(String[] args) {
-        // BARIS INI YANG TADI KETINGGALAN: Menyalakan koneksi ke database
+        // MATIKAN LOG HIBERNATE AGAR OUTPUT BERSIH UNTUK AUTOGRADING
+        Logger.getLogger("org.hibernate").setLevel(Level.OFF);
+        
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("parkit-pu");
         EntityManager em = emf.createEntityManager();
         
@@ -28,13 +33,11 @@ public class App {
             String line = scanner.nextLine().trim();
             if (line.isEmpty()) continue;
             
-            // Opsional: Ketik 'exit' untuk berhenti nge-run
             if (line.equalsIgnoreCase("exit")) break;
 
             String[] tokens = line.split("#");
             String command = tokens[0];
 
-            // TUGAS 3: Register Entities
             if (command.equals("area-add")) {
                 em.getTransaction().begin();
                 ParkingArea area = new ParkingArea(tokens[1], Integer.parseInt(tokens[2]), tokens[3]);
@@ -47,7 +50,6 @@ public class App {
                 em.persist(vehicle); 
                 em.getTransaction().commit();
 
-            // TUGAS 4: Assigning Vehicle
             } else if (command.equals("park")) {
                 em.getTransaction().begin();
                 Vehicle vehicle = em.find(Vehicle.class, tokens[1]);
@@ -68,7 +70,6 @@ public class App {
                 }
                 em.getTransaction().commit();
 
-            // TUGAS 5: Display All
             } else if (command.equals("display-all")) {
                 TypedQuery<ParkingArea> query = em.createQuery(
                     "SELECT a FROM ParkingArea a ORDER BY a.name ASC", 
