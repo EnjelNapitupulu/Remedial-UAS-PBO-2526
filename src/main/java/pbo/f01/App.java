@@ -15,13 +15,13 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Scanner;
-// Tambahan library untuk mematikan log
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.ArrayList; // Tambahan library untuk array
+import java.util.Comparator; // Tambahan library untuk sorting
 
 public class App {
     public static void main(String[] args) {
-        // MATIKAN LOG HIBERNATE AGAR OUTPUT BERSIH UNTUK AUTOGRADING
         Logger.getLogger("org.hibernate").setLevel(Level.OFF);
         
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("parkit-pu");
@@ -81,7 +81,11 @@ public class App {
                     int occupancy = area.getVehicles().size();
                     System.out.println(area.getName() + " " + area.getAllowedType() + " " + area.getCapacity() + "|" + occupancy);
                     
-                    for (Vehicle v : area.getVehicles()) {
+                    // JURUS PAMUNGKAS: Salin daftar kendaraan dan urutkan abjad plat nomornya sebelum di-print
+                    List<Vehicle> sortedVehicles = new ArrayList<>(area.getVehicles());
+                    sortedVehicles.sort(Comparator.comparing(Vehicle::getPlateNumber));
+                    
+                    for (Vehicle v : sortedVehicles) {
                         System.out.println(v.getPlateNumber() + " " + v.getOwner() + " " + v.getType());
                     }
                 }
